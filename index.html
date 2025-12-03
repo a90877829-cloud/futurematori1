@@ -12,14 +12,16 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            /* パステルカラーパレット */
+            /* 画像から抽出したアクセントカラー */
+            --accent-pink: #E75887;   /* 共に生きる (ピンク) */
+            --accent-orange: #F3AA00; /* 躍動する (イエロー/オレンジ) */
+            --accent-green: #3EB370;  /* 環境と調和する (グリーン) */
+            --accent-blue: #0095D9;   /* しなやかに立て直す (ブルー) */
+            
             --primary-bg: #fdfbf7;
             --text-color: #4a4a4a;
-            --accent-pink: #ffcdd2;   /* 共に生きる */
-            --accent-orange: #ffe0b2; /* 躍動する */
-            --accent-green: #c8e6c9;  /* 環境と調和 */
-            --accent-blue: #b3e5fc;   /* しなやかに立て直す */
             
+            /* 背景用の淡い色 */
             --card-bg-pink: #fff5f6;
             --card-bg-orange: #fffaf0;
             --card-bg-green: #f1f8f1;
@@ -102,7 +104,7 @@
 
         /* マトリクス図表示エリア */
         .matrix-image-container {
-            margin: 40px auto 10px;
+            margin: 40px auto 40px;
             max-width: 800px;
             background-color: #f9f9f9;
             border-radius: var(--border-radius);
@@ -111,6 +113,9 @@
             justify-content: center;
             align-items: center;
             border: 2px dashed #eee; /* 画像がない時の枠線 */
+            position: relative;
+            min-height: 100px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .matrix-image-container img {
@@ -119,7 +124,7 @@
             display: block;
         }
 
-        /* 画像読み込みエラー時のフォールバック（プレビュー用） */
+        /* 画像読み込みエラー時のフォールバック */
         .matrix-image-container img:not([src]):not([srcset]),
         .matrix-image-container img[src=""],
         .matrix-image-container img[style*="display: none"] {
@@ -134,12 +139,12 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-top: 50px;
+            margin-top: 20px;
         }
 
         .cat-card {
             background: #fff;
-            padding: 20px;
+            padding: 25px 20px;
             border-radius: var(--border-radius);
             text-align: center;
             border: 2px solid transparent;
@@ -155,16 +160,38 @@
             margin-bottom: 10px;
             display: block;
         }
+        
+        /* 概要カード内の軸情報 */
+        .cat-axis {
+            font-size: 0.75rem;
+            color: #888;
+            margin: -5px 0 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.6);
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+        }
+        
+        .cat-axis i {
+            font-size: 0.7rem;
+            color: #bbb;
+        }
 
-        /* カテゴリごとの色設定 */
-        .cat-pink { border-color: var(--accent-pink); color: #e57373; }
-        .cat-orange { border-color: var(--accent-orange); color: #ffb74d; }
-        .cat-green { border-color: var(--accent-green); color: #81c784; }
-        .cat-blue { border-color: var(--accent-blue); color: #4fc3f7; }
+        /* カテゴリごとの色設定 (画像の色に合わせる) */
+        .cat-pink { border-color: var(--accent-pink); color: var(--accent-pink); }
+        .cat-orange { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .cat-green { border-color: var(--accent-green); color: var(--accent-green); }
+        .cat-blue { border-color: var(--accent-blue); color: var(--accent-blue); }
 
         /* 詳細セクション共通 */
         .detail-section {
-            padding: 50px 0;
+            padding: 60px 0;
+            text-align: center;
         }
 
         .section-title {
@@ -174,6 +201,26 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+        }
+        
+        /* 象限ラベルのデザイン */
+        .quadrant-label {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 25px;
+            font-weight: 500;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .quadrant-label i {
+            color: #aaa;
+            margin: 0 6px;
+            font-size: 0.8em;
         }
 
         .section-desc {
@@ -187,6 +234,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
+            text-align: left;
         }
 
         .idea-card {
@@ -223,10 +271,11 @@
         .bg-green { background-color: var(--card-bg-green); }
         .bg-blue { background-color: var(--card-bg-blue); }
 
-        .text-pink { color: #e57373; }
-        .text-orange { color: #ff9800; }
-        .text-green { color: #66bb6a; }
-        .text-blue { color: #29b6f6; }
+        /* テキストカラーも画像の色に合わせる */
+        .text-pink { color: var(--accent-pink); }
+        .text-orange { color: var(--accent-orange); }
+        .text-green { color: var(--accent-green); }
+        .text-blue { color: var(--accent-blue); }
 
         /* まとめ */
         .summary-section {
@@ -258,6 +307,7 @@
         }
         @media (max-width: 480px) {
             .category-overview { grid-template-columns: 1fr; }
+            .quadrant-label { font-size: 0.8rem; padding: 5px 10px; }
         }
     </style>
 </head>
@@ -277,43 +327,53 @@
         <section class="intro-box">
             <h2>Garraway Fが掲げる「ありたい未来」</h2>
             <p>
-                Garraway Fでは、ご来場の際、皆様の胸にある<br class="pc-only">
-                <span class="intro-highlight">「社会を良くするビジネスアイデア」</span>を言葉にしていただいています。<br>
+                Garraway Fでは、ご来場の際、皆様から<br class="pc-only">
+                <span class="intro-highlight">「社会を良くするビジネスアイデア」</span>をお聞きしています。<br>
                 <br>
                 その一つひとつの想いを大切に受け取り、丁寧に紐解いていくと、<br>
-                未来への希望を描き出す4つの羅針盤が見えてきました。<br>
-                このマトリクス図は、皆様の創造性が織りなす、私たちのありたい未来の姿そのものです。
+                未来への希望を描き出す4つの羅針盤が見えてきました。
             </p>
-
-            <!-- マトリクス図配置エリア -->
-            <div class="matrix-image-container">
-                <img src="image_284c7d.png" alt="4象限マトリクス図：4つのまち（共に生きる、躍動する、環境と調和する、しなやかに立て直す）の相関図" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\'padding:40px; color:#aaa;\'><i class=\'ph ph-image\' style=\'font-size:48px;\'></i><br>ここにマトリクス図（image_284c7d.png）が表示されます</div>'">
-            </div>
         </section>
 
         <!-- カテゴリ概要 -->
         <section>
-            <!-- タイトルを追加 -->
             <h2>４つの「ありたいまちの未来」のテーマ</h2>
+            
+            <p class="section-desc" style="margin-bottom: 30px;">
+                Garraway Fに集まったたくさんの社会問題を解決するビジネスアイデアを、<br>
+                「人・コミュニティ ⇄ システム・環境」「安心安全・社会基盤 ⇄ 活性・バリューアップ」<br>
+                の軸で分類してみました。
+            </p>
+
+            <!-- マトリクス図配置エリア -->
+            <div class="matrix-image-container">
+                <!-- 画像パスを修正しました -->
+                <img src="image_284c7d.png" alt="4象限マトリクス図" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\'padding:40px; color:#aaa;\'><i class=\'ph ph-image\' style=\'font-size:48px;\'></i><br>ここにマトリクス図（image_284c7d.png）が表示されます</div>'">
+            </div>
+
             <div class="category-overview">
                 <div class="cat-card cat-pink">
                     <i class="ph ph-heart cat-icon"></i>
                     <h3>共に生きるまち</h3>
+                    <div class="cat-axis">人・コミュニティ <i class="ph ph-x"></i> 安心安全・社会基盤</div>
                     <p>人と人とが支え合い、<br>誰もが居場所を感じられる社会</p>
                 </div>
                 <div class="cat-card cat-orange">
                     <i class="ph ph-rocket-launch cat-icon"></i>
                     <h3>躍動するまち</h3>
+                    <div class="cat-axis">人・コミュニティ <i class="ph ph-x"></i> 活性・バリューアップ</div>
                     <p>地域の魅力が輝き、<br>新しい活力が生まれる社会</p>
                 </div>
                 <div class="cat-card cat-green">
                     <i class="ph ph-plant cat-icon"></i>
                     <h3>環境と調和するまち</h3>
+                    <div class="cat-axis">システム・環境 <i class="ph ph-x"></i> 安心安全・社会基盤</div>
                     <p>テクノロジーと自然が共生し、<br>持続可能な社会</p>
                 </div>
                 <div class="cat-card cat-blue">
                     <i class="ph ph-arrows-clockwise cat-icon"></i>
                     <h3>しなやかに<br>立て直すまち</h3>
+                    <div class="cat-axis">システム・環境 <i class="ph ph-x"></i> 活性・バリューアップ</div>
                     <p>変化に適応し、<br>資源を大切に循環させる社会</p>
                 </div>
             </div>
@@ -326,6 +386,9 @@
             <h2 class="section-title text-pink">
                 <i class="ph ph-heart-straight"></i> 共に生きるまち
             </h2>
+            <div class="quadrant-label">
+                人・コミュニティ <i class="ph ph-x"></i> 安心安全・社会基盤
+            </div>
             <p class="section-desc">
                 多様な人々が手を取り合い、孤立することなく、それぞれのライフステージで輝けるコミュニティを目指すアイデアたちです。
             </p>
@@ -356,6 +419,9 @@
             <h2 class="section-title text-orange">
                 <i class="ph ph-sun"></i> 躍動するまち
             </h2>
+            <div class="quadrant-label">
+                人・コミュニティ <i class="ph ph-x"></i> 活性・バリューアップ
+            </div>
             <p class="section-desc">
                 地域の文化や資産を現代の価値観で再定義し、外からの人を呼び込みながら、内側からもエネルギーが溢れ出すアイデアたちです。
             </p>
@@ -386,6 +452,9 @@
             <h2 class="section-title text-green">
                 <i class="ph ph-tree"></i> 環境と調和するまち
             </h2>
+            <div class="quadrant-label">
+                システム・環境 <i class="ph ph-x"></i> 安心安全・社会基盤
+            </div>
             <p class="section-desc">
                 最新のテクノロジーを駆使して、安全で快適な移動や暮らしを守りつつ、自然環境への負荷を最小限に抑えるアイデアたちです。
             </p>
@@ -416,6 +485,9 @@
             <h2 class="section-title text-blue">
                 <i class="ph ph-arrows-left-right"></i> しなやかに立て直すまち
             </h2>
+            <div class="quadrant-label">
+                システム・環境 <i class="ph ph-x"></i> 活性・バリューアップ
+            </div>
             <p class="section-desc">
                 今ある資源を無駄にせず、形を変えて再利用したり、エネルギーを自給自足したりすることで、どんな変化にも適応できる強い地域を作るアイデアたちです。
             </p>
